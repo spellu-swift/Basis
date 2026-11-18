@@ -1,0 +1,44 @@
+import SwiftSyntax
+import SwiftSyntaxMacroExpansion
+import SwiftSyntaxMacros
+import SwiftSyntaxMacrosGenericTestSupport
+import Testing
+
+
+///
+/// Swift Testing用のassertMacroExpansion
+///
+public func expectMacroExpansion(
+	_ originalSource: String,
+	expandedSource expectedExpandedSource: String,
+	diagnostics: [DiagnosticSpec] = [],
+	macros: [String: any Macro.Type],
+	applyFixIts: [String]? = nil,
+	fixedSource expectedFixedSource: String? = nil,
+	testModuleName: String = "TestModule",
+	testFileName: String = "test.swift",
+	indentationWidth: Trivia = .spaces(4),
+	sourceLocation: Testing.SourceLocation = #_sourceLocation
+) {
+	SwiftSyntaxMacrosGenericTestSupport.assertMacroExpansion(
+		originalSource,
+		expandedSource: expectedExpandedSource,
+		diagnostics: diagnostics,
+		macroSpecs: macros.mapValues { MacroSpec(type: $0) },
+		applyFixIts: applyFixIts,
+		fixedSource: expectedFixedSource,
+		testModuleName: testModuleName,
+		testFileName: testFileName,
+		indentationWidth: indentationWidth,
+		failureHandler: {
+			Issue.record(
+				.init(stringLiteral: $0.message),
+				sourceLocation: sourceLocation
+			)
+		},
+		fileID: "",  // Not used in the failure handler
+		filePath: "", /// MahdiBM comment: requires StaticString so just set it to "" for now.
+		line: UInt(sourceLocation.line),
+		column: 0  // Not used in the failure handler
+	)
+}

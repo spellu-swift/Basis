@@ -1,0 +1,3 @@
+package name:"Basis" version:"0.10.0" tool:swiftpm
+
+dependency name:SwiftSyntax version:"600.0"
