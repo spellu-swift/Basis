@@ -43,7 +43,7 @@ let package = Package(
 	],
 
 	dependencies: [
-		.package(name: "SwiftSyntaxBinary", path: "Binaries/SwiftSyntax"),
+		.package(url: "https://github.com/spellu-swift/SwiftSyntax", exact: "600.0.1"),
 	],
 
 	targets: [
@@ -111,12 +111,12 @@ let package = Package(
 
 		.target(
 			name: "SwiftMacro",
-			dependencies: [.product(name: "SwiftSyntax", package: "SwiftSyntaxBinary")],
+			dependencies: [.product(name: "SwiftSyntax", package: "SwiftSyntax")],
 		),
 
 		.macro(
 			name: "BasisMacros",
-			dependencies: [.product(name: "SwiftSyntax", package: "SwiftSyntaxBinary")],
+			dependencies: [.product(name: "SwiftSyntax", package: "SwiftSyntax")],
 		),
 		.testTarget(
 			name: "BasisMacrosTests",
@@ -136,7 +136,7 @@ let package = Package(
 			name: "MacroTesting",
 			dependencies: [
 				"UnitTesting",
-				.product(name: "SwiftSyntax", package: "SwiftSyntaxBinary"),
+				.product(name: "SwiftSyntax", package: "SwiftSyntax"),
 			],
 		),
 	],
