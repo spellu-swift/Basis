@@ -43,7 +43,7 @@ let package = Package(
 	],
 
 	dependencies: [
-		.package(url: "https://github.com/spellu-swift/SwiftSyntax", exact: "600.0.1"),
+		.package(id: "spellu.SwiftSyntax", exact: "600.0.1"),
 	],
 
 	targets: [
@@ -111,12 +111,12 @@ let package = Package(
 
 		.target(
 			name: "SwiftMacro",
-			dependencies: [.product(name: "SwiftSyntax", package: "SwiftSyntax")],
+			dependencies: [.product(name: "SwiftSyntax", package: "spellu.SwiftSyntax")],
 		),
 
 		.macro(
 			name: "BasisMacros",
-			dependencies: [.product(name: "SwiftSyntax", package: "SwiftSyntax")],
+			dependencies: [.product(name: "SwiftSyntax", package: "spellu.SwiftSyntax")],
 		),
 		.testTarget(
 			name: "BasisMacrosTests",
@@ -136,7 +136,7 @@ let package = Package(
 			name: "MacroTesting",
 			dependencies: [
 				"UnitTesting",
-				.product(name: "SwiftSyntax", package: "SwiftSyntax"),
+				.product(name: "SwiftSyntax", package: "spellu.SwiftSyntax"),
 			],
 		),
 	],

@@ -23,10 +23,3 @@ func sandbox(
 	
 	try perform(directory)
 }
-
-
-var fixtureDirectory: Directory {
-	hereDirectory().parent["Fixtures"]
-}
-
-

@@ -105,9 +105,14 @@ struct URILoadTests {
 	// MARK: file
 
 	@Test func fileのファイルを読み込む() throws {
-		let uri: URI = .file(fixtureDirectory[file: "hello"].path)
+		try Directory.withTemporary { directory in
+			let file: File = directory[file: "hello"]
+			try file.save("Hello!\n")
 
-		#expect(try uri.load().asString == "Hello!\n")
+			let uri: URI = .file(file.path)
+
+			#expect(try uri.load().asString == "Hello!\n")
+		}
 	}
 
 	@Test func 存在しないファイルは送出する() throws {

@@ -12,11 +12,26 @@
 		
 	@Test
 	func copyDirectory() throws {
-		try sandbox(name: #function) { directory in
-			let destination: FilePath = directory.path
-			
+		try Directory.withTemporary { root in
+			let source: Directory = root["source"]
+			let destination: FilePath = root[path: "destination"]
+
+			try source.createDirectory("directory/subdirectory")
+			try source.createDirectory("symlinks")
+			try source[file: "file"].save("")
+			try source[file: "hello"].save("Hello!\n")
+			try source[file: "directory/child"].save("")
+			try source[file: "directory/subdirectory/child"].save("")
+			try source.createSymlink("symlinks/directory", of: "../directory")
+			try source.createSymlink("symlinks/file", of: "../file")
+			try source.createSymlink("symlinks/same-dir", of: "file")
+			try source.createSymlink(
+				"symlinks/absolute",
+				of: source[path: "file"],
+			)
+
 			try POSIX.copyDirectory(
-				at: fixtureDirectory.path.expanded,
+				at: source.path.expanded,
 				to: destination.expanded,
 			)
 			
@@ -65,6 +80,10 @@
 			)
 			check(
 				at: destination.appending("symlinks/same-dir"),
+				type: .file, symlink: true,
+			)
+			check(
+				at: destination.appending("symlinks/absolute"),
 				type: .file, symlink: true,
 			)
 		}

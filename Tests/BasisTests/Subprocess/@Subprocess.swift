@@ -6,30 +6,34 @@ import Libc
 struct SubprocessTests {
 	
 	@Test func execute_ls() throws {
-		let currentDirectory: String = POSIX.getcwd()
-		let workingDirectory: FilePath = fixtureDirectory.path
+		try Directory.withTemporary { directory in
+			let currentDirectory: String = POSIX.getcwd()
 
-		_ = try Subprocess.execute(
-			file: "/bin/pwd",
-			workingDirectory: workingDirectory,
-		)
-		_ = try Subprocess.execute(
-			file: "/bin/ls",
-			arguments: ["-la"],
-			workingDirectory: workingDirectory,
-		)
+			_ = try Subprocess.execute(
+				file: "/bin/pwd",
+				workingDirectory: directory.path,
+			).wait()
+			_ = try Subprocess.execute(
+				file: "/bin/ls",
+				arguments: ["-la"],
+				workingDirectory: directory.path,
+			).wait()
 
-		#expect(POSIX.getcwd() == currentDirectory)
+			#expect(POSIX.getcwd() == currentDirectory)
+		}
 	}
 
 	@Test func execute_cat_file() async throws {
-		let result: Subprocess.Result
-		= try Subprocess
-			.execute(["/bin/cat", fixtureDirectory[file: "hello"].path.asString])
-			.wait()
-		
-		#expect(result.status.exitCode	== 0)
-		#expect(result.output.asString == "Hello!\n")
+		try Directory.withTemporary { directory in
+			let file: File = directory[file: "hello"]
+			try file.save("Hello!\n")
+
+			let result: Subprocess.Result
+			= try Subprocess.execute(["/bin/cat", file.path.asString]).wait()
+
+			#expect(result.status.exitCode == 0)
+			#expect(result.output.asString == "Hello!\n")
+		}
 	}
 	
 	@Test func execute_cat_stdin() async throws {

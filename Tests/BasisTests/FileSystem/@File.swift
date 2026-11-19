@@ -104,22 +104,22 @@ import Libc
 	@Test
 	func createSymbolicLink(
 	) throws {
-		try sandbox(name: #function) { directory in
-			let path = fixtureDirectory.path
-			
-			//- abosolute
-			
-			try directory[file: "abosolute"].createSymlink(of: path)
-			
+		try Directory.withTemporary { directory in
+			let path: FilePath = directory[path: "target"]
+			try path.directory.createDirectory()
+
+			//- absolute
+			try directory[file: "absolute"].createSymlink(of: path)
+
 			#expect(
-				directory[file: "abosolute"].link
+				directory[file: "absolute"].link
 				==
 				path.asString
 			)
 			#expect(
-				directory[file: "abosolute"].linkTarget?.asString
+				directory[file: "absolute"].linkTarget
 				==
-				path.asString + "/"
+				path.realized
 			)
 			
 			//- relative
@@ -158,14 +158,14 @@ import Libc
 	
 	@Test
 	func readText() throws {
-		let path: FilePath = fixtureDirectory[file: "hello"].path
-		let result: Binary = try path.file.binary
-		
-		#expect(
-			Int64(result.count)
-			==
-			path.file.status?.size
-		)
+		try Directory.withTemporary { directory in
+			let file: File = directory[file: "hello"]
+			try file.save("Hello!\n")
+
+			let result: Binary = try file.binary
+
+			#expect(Int64(result.count) == file.status?.size)
+		}
 	}
 	
 	
