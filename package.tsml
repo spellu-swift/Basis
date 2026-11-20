@@ -1,4 +1,4 @@
 
-package name:"spellu.Basis" version:"0.10.0" tool:swiftpm
+package name:"spellu.Basis" version:"0.10.2" tool:swiftpm
 
 dependency name:"spellu.SwiftSyntax" version:"600.0"
